@@ -1,25 +1,74 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import { Table } from "reactstrap";
+import Spinner from "react-bootstrap/Spinner";
+const App = () => {
+  const [companies, setCompanies] = useState([]);
 
-function App() {
+  useEffect(() => {
+    const getCompanies = async () => {
+      const response = await fetch("http://demo2211087.mockable.io/mock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: {},
+      });
+      if (response.status === 200) {
+        const data = await response.json();
+        setCompanies(data.companies);
+      } else {
+        setCompanies(["Error"]);
+      }
+    };
+    getCompanies();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container pt-5">
+      <Table bordered>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {companies[0] === "Error" && (
+            <tr>
+              <td colSpan={4} className="text-center">
+                Error
+              </td>
+            </tr>
+          )}
+
+          {companies.length === 0 && (
+            <tr>
+              <td colSpan={4} className="text-center">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </td>
+            </tr>
+          )}
+
+          {companies.length !== 0 &&
+            companies[0] !== "Error" &&
+            companies.map((data, index) => {
+              return (
+                <tr key={index + 1}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{data.name}</td>
+                  <td className="color-blue">{data.email}</td>
+                  <td>{data.status}</td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </Table>
     </div>
   );
-}
+};
 
 export default App;
