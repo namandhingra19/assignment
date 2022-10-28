@@ -7,7 +7,7 @@ const App = () => {
 
   useEffect(() => {
     const getCompanies = async () => {
-      const response = await fetch("http://demo2211087.mockable.io/mock", {
+      const response = await fetch("https://demo2211087.mockable.io/mock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: {},
@@ -19,7 +19,12 @@ const App = () => {
         setCompanies(["Error"]);
       }
     };
-    getCompanies();
+    try{
+      getCompanies();
+    }
+    catch(e){
+      setCompanies(["Error"]);
+    }
   }, []);
 
   return (
